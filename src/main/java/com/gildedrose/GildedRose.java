@@ -14,65 +14,28 @@ class GildedRose {
     public void updateQuality() {
         for (int i = 0; i < items.length; i++) {
             Item item = items[i];
-            if (item.name.equals(AGED_BRIE)) {
-                updateQualityForAgedBrie(item);
-            } else if (item.name.equals(BACKSTAGE_PASS)) {
-                updateQualityForBackstagePasses(item);
-            } else if (item.name.equals(SULFURAS)) {
-                //updateQualityForSulfuras(item);
-            } else {
-                updateQualityForNormalItem(item);
-            }
+            updateQuality(item);
             updateSellIn(item);
         }
     }
 
-    private static void updateQualityForAgedBrie(Item item) {
-        if (item.quality < 50) {
-            item.quality = item.quality + 1;
-        }
-        if (item.sellIn < 1) {
-            if (item.quality < 50) {
-                item.quality = item.quality + 1;
-            }
-        }
+    private static void updateQuality(Item item) {
+        GildedRoseItem gildedRoseItem = getGildedRoseItem(item);
+        gildedRoseItem.updateQuality(item);
     }
 
-    private static void updateQualityForBackstagePasses(Item item) {
-        if (item.quality < 50) {
-            item.quality = item.quality + 1;
-
-            if (item.sellIn < 11) {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1;
-                }
-            }
-
-            if (item.sellIn < 6) {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1;
-                }
-            }
-
+    private static GildedRoseItem getGildedRoseItem(Item item) {
+        GildedRoseItem gildedRoseItem;
+        if (item.name.equals(AGED_BRIE)) {
+            gildedRoseItem = new AgedBrieItem(item);
+        } else if (item.name.equals(BACKSTAGE_PASS)) {
+            gildedRoseItem = new BackstagePassItem(item);
+        } else if (item.name.equals(SULFURAS)) {
+            gildedRoseItem = new SulfurasItem(item);
+        } else {
+            gildedRoseItem = new NormalItem(item);
         }
-        if (item.sellIn < 1) {
-            item.quality = 0;
-        }
-    }
-
-    private static void updateQualityForNormalItem(Item item) {
-        if (item.quality > 0) {
-            item.quality = item.quality - 1;
-        }
-        if (item.sellIn < 1) {
-            if (item.quality > 0) {
-                item.quality = item.quality - 1;
-            }
-        }
-    }
-
-    private void updateQualityForSulfuras(Item item){
-
+        return gildedRoseItem;
     }
 
     private static void updateSellIn(Item item) {
@@ -81,5 +44,4 @@ class GildedRose {
             item.sellIn = item.sellIn - 1;
         }
     }
-
 }
